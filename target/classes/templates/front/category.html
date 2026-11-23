@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('分类详情')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div class="gp-card">
+        <div class="gp-title" th:style="'color:' + ${category.color} + ';font-size:22px;'"
+             th:text="${category.name} + ' — 分类详情'"></div>
+        <p style="color:#555;line-height:1.8;" th:text="${category.disposalMethod}"></p>
+        <p style="margin-top:12px;">
+            <a href="/knowledge" class="layui-btn layui-btn-sm layui-btn-primary">← 返回知识库</a>
+            <a th:href="'/search?categoryId=' + ${category.id}" class="layui-btn layui-btn-sm layui-btn-primary">🔍 搜索该分类</a>
+            <a href="/" class="layui-btn layui-btn-sm layui-btn-primary">🏠 返回首页</a>
+        </p>
+    </div>
+    <div class="gp-card">
+        <div class="gp-title">该分类下的垃圾条目（<span th:text="${items.size()}"></span> 条）</div>
+        <table class="layui-table">
+            <thead><tr><th>名称</th><th>别名</th><th>危害等级</th><th>降解周期</th><th>投放建议</th><th>常见误区</th></tr></thead>
+            <tbody>
+            <tr th:each="it : ${items}">
+                <td th:text="${it.name}"></td><td th:text="${it.alias}"></td>
+                <td th:text="${it.hazardLevel}"></td><td th:text="${it.decompositionTime}"></td>
+                <td th:text="${it.recycleInfo}"></td><td th:text="${it.commonMistake}"></td>
+            </tr>
+            <tr th:if="${items.isEmpty()}"><td colspan="6" style="text-align:center;color:#999;">该分类暂无条目</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('登录')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container" style="width:420px;margin-top:80px;">
+    <div class="gp-card">
+        <div class="gp-title">用户登录</div>
+        <div th:if="${error}" style="color:#f5222d;margin-bottom:10px" th:text="${error}"></div>
+        <div th:if="${msg}" style="color:#52c41a;margin-bottom:10px" th:text="${msg}"></div>
+        <form method="post" action="/login">
+            <p><input name="username" class="layui-input" placeholder="用户名" required></p>
+            <p><input name="password" type="password" class="layui-input" placeholder="密码" required></p>
+            <button class="layui-btn layui-btn-fluid layui-btn-normal" type="submit">登录</button>
+        </form>
+        <p style="margin-top:12px;text-align:center;"><a href="/register">去注册</a> ｜ <a href="/admin/login">管理员入口</a></p>
+        <p style="color:#999;font-size:12px;">演示账号：user1/123456，管理员：admin/123456</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <title th:text="${title}">垃圾分类宣传平台</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/layui/2.9.18/css/layui.css">
+    <script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/layui/2.9.18/layui.js"></script>
+    <style>
+        body{background:#f5f7fa;margin:0}
+        .gp-nav{background:#1677ff;padding:0 40px;display:flex;align-items:center;height:56px}
+        .gp-nav a{color:#fff;margin-right:24px;font-size:15px;text-decoration:none}
+        .gp-nav .brand{font-size:20px;font-weight:bold;margin-right:40px;color:#fff}
+        .gp-container{width:1100px;margin:20px auto}
+        .gp-card{background:#fff;border-radius:8px;padding:20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+        .gp-title{font-size:18px;font-weight:bold;margin-bottom:12px}
+        .gp-nav-admin{background:#001529}
+        .gp-crumb{display:flex;justify-content:space-between;align-items:center;padding:12px 20px}
+        .gp-crumb .path{color:#666;font-size:14px}
+        .gp-crumb .path a{color:#1677ff;text-decoration:none}
+        .gp-crumb .path .sep{margin:0 6px;color:#bbb}
+        .gp-cat-card{transition:transform .2s,box-shadow .2s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+        .gp-cat-card:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(22,119,255,.18)}
+    </style>
+</head>
+<body>
+
+<div th:fragment="frontNav" class="gp-nav">
+    <span class="brand">🌿 垃圾分类宣传平台</span>
+    <a href="/">首页</a>
+    <a href="/knowledge">分类知识库</a>
+    <a href="/quiz">趣味答题</a>
+    <a href="/record">投放记录</a>
+    <a href="/points">我的积分</a>
+    <span style="flex:1"></span>
+    <a th:if="${session.loginUser != null}" href="/logout">退出（<span th:text="${session.loginUser.nickname}"></span>）</a>
+    <a th:if="${session.loginUser == null}" href="/login">登录</a>
+    <a th:if="${session.loginUser == null}" href="/register">注册</a>
+</div>
+
+<div th:fragment="adminNav" class="gp-nav gp-nav-admin">
+    <span class="brand">🛠 垃圾分类后台管理</span>
+    <a href="/admin/index">数据看板</a>
+    <a href="/admin/garbage">垃圾条目</a>
+    <a href="/admin/records">投放审核</a>
+    <a href="/admin/quiz">题库管理</a>
+    <a href="/admin/users">用户管理</a>
+    <a href="/admin/articles">内容管理</a>
+    <span style="flex:1"></span>
+    <a href="/" target="_blank">🏠 前台首页</a>
+    <a th:if="${session.loginUser != null}" href="/logout">退出（<span th:text="${session.loginUser.nickname}"></span>）</a>
+</div>
+
+<div th:fragment="adminCrumb(name)" class="gp-card gp-crumb">
+    <div class="path">
+        <a href="/admin/index">🏠 后台首页</a>
+        <span class="sep">/</span>
+        <span th:text="${name}">当前页面</span>
+    </div>
+    <div>
+        <a href="/admin/index" class="layui-btn layui-btn-sm layui-btn-primary">← 返回看板</a>
+        <a href="javascript:history.back()" class="layui-btn layui-btn-sm layui-btn-primary">↩ 返回上一页</a>
+        <a href="/" target="_blank" class="layui-btn layui-btn-sm layui-btn-primary">🏠 前台首页</a>
+    </div>
+</div>
+</body>
+</html>

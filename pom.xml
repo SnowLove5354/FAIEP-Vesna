@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ================= 父工程：Spring Boot 2.7.18 ================= -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>garbage-platform</artifactId>
+    <version>1.0.0</version>
+
+    <!-- 打包为可执行 jar（Spring Boot 默认即 jar，此处显式声明更清晰） -->
+    <packaging>jar</packaging>
+
+    <!-- ================= 属性配置 ================= -->
+    <properties>
+        <java.version>1.8</java.version>
+        <!-- 关键修复：覆盖父 POM 钉死的 lombok 版本
+             Spring Boot 2.7.18 默认给的是 1.18.30，只支持到 JDK 21，
+             在高版本 JDK 上会抛 ExceptionInInitializerError: TypeTag::UNKNOWN -->
+        <lombok.version>1.18.48</lombok.version>
+    </properties>
+
+    <!-- ================= 依赖 ================= -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+
+        <!-- lombok 显式锁版本，不再继承父 POM 的旧版本 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <!-- ================= 构建插件 ================= -->
+    <build>
+        <plugins>
+            <!-- 编译插件：修正 lombok 与高版本 JDK 的兼容问题 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- 由 3.10.1 升级到 3.14.0：3.10.1 在高版本 JDK 上编译不稳定，
+                     3.14.0 已针对 JDK 24 做了适配 -->
+                <version>3.14.0</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <encoding>UTF-8</encoding>
+                    <!-- JDK 23 起注解处理默认行为有变化，显式开启，保证 lombok 生效 -->
+                    <proc>full</proc>
+                    <!-- 注解处理器路径：版本必须与上面的依赖完全一致，且不能省略 -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- ============ 关键补充：Spring Boot 打包插件 ============
+                 没有它，mvn package 只会打出普通 jar，MANIFEST.MF 中不会有
+                 Main-Class / Start-Class，运行时报「没有主清单属性」。
+                 它会把项目重新打包成可执行的 fat jar。
+                 版本由父 POM（2.7.18）统一管理，此处无需写 <version>；
+                 显式声明 repackage 目标，确保打包时一定执行。 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

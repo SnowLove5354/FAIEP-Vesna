@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('题库管理')"></head>
+<body>
+<div th:replace="fragments/common :: adminNav"></div>
+<div class="gp-container">
+    <div th:replace="fragments/common :: adminCrumb('题库管理')"></div>
+
+    <div th:if="${msg}" class="gp-card"
+         th:style="${#strings.startsWith(msg,'✅') ? 'color:#52c41a' : 'color:#f5222d'}"
+         th:text="${msg}"></div>
+
+    <div class="gp-card">
+        <div class="gp-title">筛选</div>
+        <form action="/admin/quiz" method="get" style="display:flex;gap:8px;">
+            <select name="categoryId" style="width:200px;height:38px;">
+                <option value="">全部分类</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                        th:selected="${categoryId != null and categoryId == c.id}"></option>
+            </select>
+            <button class="layui-btn layui-btn-normal" type="submit">筛选</button>
+            <a href="/admin/quiz" class="layui-btn layui-btn-primary">重置</a>
+        </form>
+    </div>
+
+    <div class="gp-card">
+        <div class="gp-title">新增题目</div>
+        <form action="/admin/quiz/add" method="post">
+            <input type="hidden" name="filterCategoryId" th:value="${categoryId}">
+            <p><input name="questionText" class="layui-input"
+                      placeholder="题干，如：矿泉水瓶属于哪类垃圾？" required maxlength="500"></p>
+            <p><textarea name="optionsText" class="layui-textarea" rows="6" required
+                         placeholder="选项，每行一个（2~8 个），例如：&#10;可回收物&#10;有害垃圾&#10;厨余垃圾&#10;其他垃圾"></textarea></p>
+            <p style="display:flex;gap:8px;flex-wrap:wrap;">
+                <select name="correctAnswer" style="width:140px;height:38px;" required>
+                    <option value="">正确答案</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                </select>
+                <select name="categoryId" style="width:180px;height:38px;">
+                    <option value="">不关联分类</option>
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+                <button class="layui-btn layui-btn-normal" type="submit">添加题目</button>
+                <span style="color:#999;font-size:12px;line-height:38px;">提示：正确答案必须落在选项范围内</span>
+            </p>
+        </form>
+    </div>
+
+    <div class="gp-card">
+        <div class="gp-title">题目列表（<span th:text="${rows.size()}"></span> 题）</div>
+        <table class="layui-table" style="table-layout:fixed;">
+            <thead>
+            <tr>
+                <th style="width:60px;">ID</th>
+                <th style="width:320px;">题干</th>
+                <th>选项</th>
+                <th style="width:80px;">答案</th>
+                <th style="width:110px;">分类</th>
+                <th style="width:90px;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rows}">
+                <td th:text="${r.id}"></td>
+                <td th:text="${r.questionText}"
+                    style="max-width:320px;word-wrap:break-word;white-space:normal;line-height:1.6;"></td>
+                <td>
+                    <div th:each="opt, stat : ${r.options}">
+                        <span th:text="${opt}"
+                              th:style="${stat.index == r.correctIndex ? 'color:#52c41a;font-weight:bold;' : ''}"></span>
+                    </div>
+                </td>
+                <td style="color:#52c41a;font-weight:bold;" th:text="${r.correctAnswer}"></td>
+                <td th:text="${r.categoryName}"></td>
+                <td>
+                    <form th:action="'/admin/quiz/delete/' + ${r.id}" method="post" style="display:inline;"
+                          onsubmit="return confirm('确定删除该题目？')">
+                        <input type="hidden" name="filterCategoryId" th:value="${categoryId}">
+                        <button class="layui-btn layui-btn-xs layui-btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${rows.isEmpty()}">
+                <td colspan="6" style="text-align:center;color:#999;">暂无题目，请通过上方表单新增</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>系统出错</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/layui/2.9.18/css/layui.css">
+    <style>
+        body{background:#f5f7fa;margin:0;font-family:sans-serif;}
+        .err-wrap{width:600px;margin:100px auto;background:#fff;padding:40px;border-radius:8px;
+                  box-shadow:0 1px 4px rgba(0,0,0,.06);text-align:center;}
+        .err-wrap h1{color:#f5222d;font-size:28px;}
+        .err-wrap p{color:#666;line-height:1.8;}
+        .err-wrap .code{color:#999;font-size:12px;margin-top:20px;}
+    </style>
+</head>
+<body>
+<div class="err-wrap">
+    <h1>😢 页面出错了</h1>
+    <p>我们遇到了一个内部错误，请稍后重试。</p>
+    <p>
+        <span class="layui-badge layui-bg-red" th:text="'状态码 ' + ${status}"></span>
+        <span style="margin-left:8px;" th:text="${error}"></span>
+    </p>
+    <p th:if="${message != null and !#strings.isEmpty(message)}"
+       style="color:#999;font-size:13px;" th:text="${message}"></p>
+    <p style="margin-top:30px;">
+        <a href="javascript:history.back()" class="layui-btn layui-btn-primary">返回上一页</a>
+        <a href="/" class="layui-btn layui-btn-normal">回到首页</a>
+        <a href="/admin/index" class="layui-btn layui-btn-primary">后台首页</a>
+    </p>
+    <div class="code">出错时间：<span th:text="${timestamp}"></span></div>
+</div>
+</body>
+</html>

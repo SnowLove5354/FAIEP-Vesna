@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('分类知识库')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div th:each="c : ${categories}" class="gp-card">
+        <div class="gp-title">
+            <a th:href="'/category/' + ${c.id}" th:style="'color:' + ${c.color} + ';text-decoration:none'" th:text="${c.name}"></a>
+            <span style="color:#999;font-size:13px;font-weight:normal;" th:text="'（' + ${c.disposalMethod} + '）'"></span>
+            <a th:href="'/category/' + ${c.id}" class="layui-btn layui-btn-xs layui-btn-primary" style="float:right;">查看详情</a>
+        </div>
+        <table class="layui-table">
+            <thead><tr><th>名称</th><th>别名</th><th>降解周期</th><th>常见误区</th></tr></thead>
+            <tbody>
+            <tr th:each="it : ${itemMap.get(c.id)}">
+                <td th:text="${it.name}"></td><td th:text="${it.alias}"></td>
+                <td th:text="${it.decompositionTime}"></td><td th:text="${it.commonMistake}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

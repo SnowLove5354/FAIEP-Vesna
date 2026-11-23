@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('垃圾条目管理')"></head>
+<body>
+<div th:replace="fragments/common :: adminNav"></div>
+<div class="gp-container">
+    <div th:replace="fragments/common :: adminCrumb('垃圾条目管理')"></div>
+    <div class="gp-card">
+        <div class="gp-title">新增垃圾条目</div>
+        <form action="/admin/garbage/add" method="post" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <select name="categoryId" style="width:150px;height:38px;" required>
+                <option value="">选择分类</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+            <input name="name" class="layui-input" placeholder="标准名称" style="width:160px;" required>
+            <input name="alias" class="layui-input" placeholder="别名，逗号分隔" style="width:200px;">
+            <input name="hazardLevel" class="layui-input" placeholder="危害等级" style="width:110px;">
+            <input name="decompositionTime" class="layui-input" placeholder="降解周期" style="width:120px;">
+            <input name="recycleInfo" class="layui-input" placeholder="投放建议" style="width:200px;">
+            <input name="commonMistake" class="layui-input" placeholder="常见误区" style="width:200px;">
+            <button class="layui-btn layui-btn-normal" type="submit">添加</button>
+        </form>
+    </div>
+    <div class="gp-card">
+        <div class="gp-title">条目列表</div>
+        <table class="layui-table">
+            <thead><tr><th>ID</th><th>名称</th><th>分类</th><th>别名</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr th:each="it : ${items}">
+                <td th:text="${it.id}"></td><td th:text="${it.name}"></td>
+                <td th:text="${it.categoryName}"></td><td th:text="${it.alias}"></td>
+                <td>
+                    <form th:action="'/admin/garbage/delete/' + ${it.id}" method="post" style="display:inline;" onsubmit="return confirm('确定删除？')">
+                        <button class="layui-btn layui-btn-xs layui-btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
