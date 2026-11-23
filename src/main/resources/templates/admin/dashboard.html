@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('后台首页')"></head>
+<body>
+<div th:replace="fragments/common :: adminNav"></div>
+<div class="gp-container">
+    <div th:replace="fragments/common :: adminCrumb('数据看板')"></div>
+    <div class="gp-card" style="display:flex;gap:16px;text-align:center;">
+        <div style="flex:1;padding:20px;background:#e6f4ff;border-radius:8px;"><div style="font-size:28px;color:#1677ff;" th:text="${userCount}"></div><div>注册用户</div></div>
+        <div style="flex:1;padding:20px;background:#f6ffed;border-radius:8px;"><div style="font-size:28px;color:#52c41a;" th:text="${recordCount}"></div><div>投放记录</div></div>
+        <div style="flex:1;padding:20px;background:#fff7e6;border-radius:8px;"><div style="font-size:28px;color:#faad14;" th:text="${itemCount}"></div><div>垃圾条目</div></div>
+        <div style="flex:1;padding:20px;background:#fff1f0;border-radius:8px;"><div style="font-size:28px;color:#f5222d;" th:text="${questionCount}"></div><div>题库数量</div></div>
+    </div>
+    <div style="display:flex;gap:16px;">
+        <div class="gp-card" style="flex:1;"><div class="gp-title">投放分类占比</div><div id="pie" style="height:320px;"></div></div>
+        <div class="gp-card" style="flex:1;"><div class="gp-title">近7天投放趋势</div><div id="trend" style="height:320px;"></div></div>
+    </div>
+    <div class="gp-card">
+        <a href="/admin/garbage" class="layui-btn layui-btn-normal">垃圾条目管理</a>
+        <a href="/admin/records" class="layui-btn">投放审核</a>
+        <a href="/admin/quiz" class="layui-btn">题库管理</a>
+        <a href="/admin/users" class="layui-btn">用户管理</a>
+        <a href="/admin/articles" class="layui-btn">内容管理</a>
+    </div>
+</div>
+<script src="https://cdn.staticfile.org/echarts/5.4.3/echarts.min.js"></script>
+<script th:inline="javascript">
+    var pieData = /*[[${categoryStats}]]*/ [];
+    var trendData = /*[[${trendStats}]]*/ [];
+    echarts.init(document.getElementById('pie')).setOption({
+        tooltip:{trigger:'item'},
+        series:[{type:'pie', radius:'65%', data: pieData.map(function(d){return {name:d.name,value:d.value};})}]
+    });
+    echarts.init(document.getElementById('trend')).setOption({
+        tooltip:{trigger:'axis'},
+        xAxis:{type:'category', data: trendData.map(function(d){return d.day;})},
+        yAxis:{type:'value'},
+        series:[{type:'line', data: trendData.map(function(d){return d.cnt;}), smooth:true}]
+    });
+</script>
+</body>
+</html>

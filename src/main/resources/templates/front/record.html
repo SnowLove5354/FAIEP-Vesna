@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('我的投放记录')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div th:if="${msg}" class="gp-card" style="color:#52c41a" th:text="${msg}"></div>
+    <div class="gp-card">
+        <div class="gp-title">提交投放记录</div>
+        <form action="/record/submit" method="post" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <select name="categoryId" style="width:160px;height:38px;" required>
+                <option value="">选择分类</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+            <input name="weight" type="number" step="0.1" min="0" placeholder="重量(kg)" class="layui-input" style="width:140px;">
+            <input name="quantity" type="number" min="1" value="1" class="layui-input" style="width:120px;">
+            <button class="layui-btn layui-btn-normal" type="submit">提交</button>
+        </form>
+    </div>
+    <div class="gp-card">
+        <div class="gp-title">历史记录</div>
+        <table class="layui-table">
+            <thead><tr><th>单号</th><th>分类</th><th>重量</th><th>数量</th><th>状态</th><th>积分</th><th>时间</th></tr></thead>
+            <tbody>
+            <tr th:each="r : ${records}">
+                <td th:text="${r.recordNo}"></td><td th:text="${r.categoryName}"></td>
+                <td th:text="${r.weight}"></td><td th:text="${r.quantity}"></td>
+                <td>
+                    <span th:if="${r.status == 0}" style="color:#faad14;">待审核</span>
+                    <span th:if="${r.status == 1}" style="color:#52c41a;">已通过</span>
+                    <span th:if="${r.status == 2}" style="color:#f5222d;" th:text="'已驳回：' + ${r.rejectReason}"></span>
+                </td>
+                <td th:text="${r.prePoints}"></td>
+                <td th:text="${#temporals.format(r.createTime,'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr th:if="${records.isEmpty()}"><td colspan="7" style="text-align:center;color:#999;">暂无记录</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

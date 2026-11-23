@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('管理员登录')"></head>
+<body>
+<div class="gp-container" style="width:420px;margin-top:100px;">
+    <div class="gp-card">
+        <div class="gp-title">🛠 后台管理登录</div>
+        <div th:if="${error}" style="color:#f5222d" th:text="${error}"></div>
+        <form method="post" action="/admin/login" style="margin-top:12px;">
+            <p><input name="username" class="layui-input" placeholder="管理员账号" required></p>
+            <p><input name="password" type="password" class="layui-input" placeholder="密码" required></p>
+            <button class="layui-btn layui-btn-fluid layui-btn-normal" type="submit">登录</button>
+        </form>
+        <p style="color:#999;font-size:12px;margin-top:10px;">默认账号：admin / 123456</p>
+        <p style="margin-top:12px;text-align:center;">
+            <a href="/">← 返回前台首页</a> ｜ <a href="/login">用户登录</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

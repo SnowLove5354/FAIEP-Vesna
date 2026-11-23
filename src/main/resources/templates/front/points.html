@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('我的积分')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div class="gp-card"><div class="gp-title">当前积分：<span style="color:#f5222d;font-size:24px;" th:text="${points}"></span></div></div>
+    <div class="gp-card">
+        <div class="gp-title">积分明细</div>
+        <table class="layui-table">
+            <thead><tr><th>时间</th><th>类型</th><th>变动</th><th>备注</th></tr></thead>
+            <tbody>
+            <tr th:each="l : ${logs}">
+                <td th:text="${#temporals.format(l.createTime,'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${l.type}"></td>
+                <td>
+                    <span th:if="${l.changePoints >= 0}" style="color:#52c41a;" th:text="'+' + ${l.changePoints}"></span>
+                    <span th:if="${l.changePoints < 0}" style="color:#f5222d;" th:text="${l.changePoints}"></span>
+                </td>
+                <td th:text="${l.remark}"></td>
+            </tr>
+            <tr th:if="${logs.isEmpty()}"><td colspan="4" style="text-align:center;color:#999;">暂无积分记录</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

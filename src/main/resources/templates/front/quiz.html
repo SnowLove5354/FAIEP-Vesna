@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('趣味答题')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div class="gp-card">
+        <div class="gp-title">🎯 垃圾分类趣味答题（每题2分）</div>
+        <button id="startBtn" class="layui-btn layui-btn-normal">开始答题</button>
+        <button id="submitBtn" class="layui-btn" style="display:none;">提交答案</button>
+    </div>
+    <div id="quizBox"></div>
+    <div id="resultBox" class="gp-card" style="display:none;"></div>
+</div>
+<script>
+$(function(){
+    $.ajaxSetup({headers: {'X-Requested-With': 'XMLHttpRequest'}});
+    $('#startBtn').click(function(){
+        $.get('/quiz/questions?num=5', function(res){
+            if(res.code !== 200){ alert(res.msg); return; }
+            var html = '';
+            res.data.forEach(function(q, i){
+                var opts = JSON.parse(q.optionsJson);
+                html += '<div class="gp-card quiz-q" data-id="' + q.id + '">';
+                html += '<div class="gp-title">' + (i+1) + '. ' + q.questionText + '</div>';
+                opts.forEach(function(o, j){
+                    var letter = String.fromCharCode(65 + j);
+                    html += '<label style="display:block;margin:6px 0;cursor:pointer;">';
+                    html += '<input type="radio" name="q_' + q.id + '" value="' + letter + '"> ' + letter + '. ' + o + '</label>';
+                });
+                html += '</div>';
+            });
+            $('#quizBox').html(html);
+            $('#startBtn').hide(); $('#submitBtn').show();
+        });
+    });
+    $('#submitBtn').click(function(){
+        var answers = [];
+        $('.quiz-q').each(function(){
+            var id = $(this).data('id');
+            var val = $('input[name="q_' + id + '"]:checked').val();
+            answers.push({questionId: id, answer: val || ''});
+        });
+        $.ajax({url:'/quiz/submit', type:'POST', contentType:'application/json',
+            data: JSON.stringify({answers: answers}),
+            success: function(res){
+                if(res.code !== 200){ alert(res.msg); return; }
+                var d = res.data;
+                var html = '<div class="gp-title">得分：' + d.score + ' 分，答对 ' + d.correctCount + ' 题</div>';
+                d.details.forEach(function(it, i){
+                    html += '<div style="margin:10px 0;padding:10px;border-left:3px solid ' + (it.ok ? '#52c41a' : '#f5222d') + ';">';
+                    html += '<div>' + (i+1) + '. ' + it.questionText + '</div>';
+                    html += '<div>你的答案：' + (it.yourAnswer || '未作答') + '｜ 正确答案：' + it.correctAnswer + '</div></div>';
+                });
+                $('#resultBox').html(html).show();
+                $('#submitBtn').hide(); $('#startBtn').text('再来一组').show();
+            }});
+    });
+});
+</script>
+</body>
+</html>

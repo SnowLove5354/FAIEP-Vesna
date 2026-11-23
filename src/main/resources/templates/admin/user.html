@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('用户管理')"></head>
+<body>
+<div th:replace="fragments/common :: adminNav"></div>
+<div class="gp-container">
+    <div th:replace="fragments/common :: adminCrumb('用户管理')"></div>
+    <div class="gp-card">
+        <div class="gp-title">普通用户列表</div>
+        <table class="layui-table">
+            <thead><tr><th>ID</th><th>用户名</th><th>昵称</th><th>积分</th><th>状态</th><th>注册时间</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}"></td><td th:text="${u.username}"></td>
+                <td th:text="${u.nickname}"></td><td th:text="${u.points}"></td>
+                <td th:text="${u.status == 1 ? '正常' : '禁用'}"></td>
+                <td th:text="${#temporals.format(u.createTime,'yyyy-MM-dd HH:mm')}"></td>
+                <td>
+                    <form action="/admin/users/status" method="post" style="display:inline;">
+                        <input type="hidden" name="id" th:value="${u.id}">
+                        <input type="hidden" name="status" th:value="${u.status == 1 ? 0 : 1}">
+                        <button class="layui-btn layui-btn-xs" th:text="${u.status == 1 ? '禁用' : '启用'}"></button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

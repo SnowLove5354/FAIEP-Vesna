@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('文章详情')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div class="gp-card">
+        <h2 th:text="${article.title}"></h2>
+        <div style="color:#999;font-size:13px;">发布时间：<span th:text="${#temporals.format(article.createTime,'yyyy-MM-dd HH:mm')}"></span> ｜ 浏览量：<span th:text="${article.viewCount}"></span></div>
+        <hr>
+        <div th:utext="${article.content}"></div>
+    </div>
+</div>
+</body>
+</html>

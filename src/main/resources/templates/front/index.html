@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('首页 - 垃圾分类宣传平台')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container">
+    <div class="gp-card" style="text-align:center;padding:40px;">
+        <h1>让每一次投放，都成为环保行动</h1>
+        <form action="/search" method="get" style="margin-top:20px;">
+            <input name="keyword" placeholder="输入垃圾名称，如：矿泉水瓶、废电池"
+                   style="width:420px;height:40px;padding:0 12px;border:1px solid #ddd;border-radius:6px;">
+            <button type="submit" class="layui-btn layui-btn-normal" style="height:40px;">立即查询</button>
+        </form>
+    </div>
+    <div class="gp-card">
+        <div class="gp-title">四大分类（点击卡片查看详情）</div>
+        <div style="display:flex;gap:16px;">
+            <a th:each="c : ${categories}" th:href="'/category/' + ${c.id}" class="gp-cat-card"
+               th:style="'flex:1;text-align:center;border-top:4px solid ' + ${c.color} + ';padding:20px 16px;background:#fafafa;border-radius:6px'">
+                <div style="font-size:22px;font-weight:bold" th:text="${c.name}"></div>
+                <div style="color:#888;font-size:13px;margin-top:8px;min-height:38px" th:text="${c.disposalMethod}"></div>
+                <div style="color:#1677ff;font-size:13px;margin-top:10px;">查看详情 →</div>
+            </a>
+        </div>
+    </div>
+    <div style="display:flex;gap:16px;">
+        <div class="gp-card" style="flex:1;">
+            <div class="gp-title">📢 平台公告</div>
+            <ul><li th:each="n : ${notices}" style="margin:8px 0;"><a th:href="'/article/' + ${n.id}" th:text="${n.title}"></a></li></ul>
+        </div>
+        <div class="gp-card" style="flex:1;">
+            <div class="gp-title">📖 科普文章</div>
+            <ul><li th:each="a : ${articles}" style="margin:8px 0;"><a th:href="'/article/' + ${a.id}" th:text="${a.title}"></a></li></ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

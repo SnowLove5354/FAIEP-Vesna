@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head('注册')"></head>
+<body>
+<div th:replace="fragments/common :: frontNav"></div>
+<div class="gp-container" style="width:420px;margin-top:60px;">
+    <div class="gp-card">
+        <div class="gp-title">用户注册</div>
+        <div th:if="${error}" style="color:#f5222d" th:text="${error}"></div>
+        <form method="post" action="/register" style="margin-top:12px;">
+            <p><input name="username" class="layui-input" placeholder="用户名" required></p>
+            <p><input name="password" type="password" class="layui-input" placeholder="密码（至少6位）" required minlength="6"></p>
+            <p><input name="nickname" class="layui-input" placeholder="昵称"></p>
+            <p><input name="phone" class="layui-input" placeholder="手机号"></p>
+            <button class="layui-btn layui-btn-fluid layui-btn-normal" type="submit">注册</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
